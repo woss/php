@@ -3,12 +3,13 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_infra
+  name: policyfile_zero
   product_name: chef
   chef_license: accept-no-persist
   enforce_idempotency: true
   multiple_converge: 2
   deprecations_as_errors: true
+  policyfile: Policyfile.rb
 
 verifier:
   name: inspec
@@ -18,7 +19,6 @@ platforms:
   - name: almalinux-9
   - name: amazonlinux-2023
   - name: centos-stream-9
-  - name: debian-11
   - name: debian-12
   - name: fedora-latest
   - name: rockylinux-8
@@ -29,17 +29,19 @@ platforms:
 
 suites:
   - name: resource
-    run_list:
-      - recipe[test::default]
+    provisioner:
+      named_run_list: default
   - name: resource_community
-    run_list:
-      - recipe[test::community]
+    provisioner:
+      named_run_list: community
     excludes:
       - ubuntu-18.04
+      - ubuntu-20.04
       - amazonlinux-2023
+      - fedora-latest
   - name: resource_peclchannel
-    run_list:
-      - recipe[test::default]
+    provisioner:
+      named_run_list: default
     attributes:
       pecl_method: channel
     verifier:
